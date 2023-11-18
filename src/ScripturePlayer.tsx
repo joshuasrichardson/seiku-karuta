@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import AudioPlayer from "./AudioPlayer";
 import {
+  StandardWork,
   introScriptures,
   masteryScriptures,
   otherScriptures,
 } from "./constants";
 import { getRandomItemFromArray, removeRandomItemFromArray } from "./utils";
+import DeckSelector from "./DeckSelector";
 
 interface ScripturePlayerProps {
   completeGame: () => void;
@@ -13,11 +15,22 @@ interface ScripturePlayerProps {
 
 const ScripturePlayer: React.FC<ScripturePlayerProps> = ({ completeGame }) => {
   const [scripturSrc, setScripturSrc] = useState<string | undefined>();
-  const [unusedMasteryScriptures, setUnusedMasteryScriptures] =
-    useState(masteryScriptures);
+  const [decks, setDecks] = useState<StandardWork[]>([
+    StandardWork.OLD_TESTAMENT,
+    StandardWork.NEW_TESTAMENT,
+  ]);
+  const [unusedMasteryScriptures, setUnusedMasteryScriptures] = useState(
+    decks.map((deck) => masteryScriptures[deck]).flat()
+  );
   const [unusedOtherScriptures, setUnusedOtherScriptures] =
     useState(otherScriptures);
   const [isReadingIntro, setIsReadingIntro] = useState(true);
+
+  useEffect(() => {
+    setUnusedMasteryScriptures(
+      decks.map((deck) => masteryScriptures[deck]).flat()
+    );
+  }, [decks]);
 
   const chooseScriptureListAndSetter = (): any[] => {
     if (unusedOtherScriptures.length === 0) {
@@ -46,7 +59,16 @@ const ScripturePlayer: React.FC<ScripturePlayerProps> = ({ completeGame }) => {
     setIsReadingIntro((prev) => !prev);
   };
 
-  return <AudioPlayer src={scripturSrc} onAudioEnd={onAudioEnd} />;
+  return (
+    <div>
+      <AudioPlayer src={scripturSrc} onAudioEnd={onAudioEnd} />
+      <DeckSelector
+        allDecks={Object.values(StandardWork)}
+        decks={decks}
+        setDecks={setDecks}
+      />
+    </div>
+  );
 };
 
 export default ScripturePlayer;
