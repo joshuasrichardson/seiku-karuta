@@ -15,10 +15,9 @@ interface ScripturePlayerProps {
 
 const ScripturePlayer: React.FC<ScripturePlayerProps> = ({ completeGame }) => {
   const [scripturSrc, setScripturSrc] = useState<string | undefined>();
-  const [decks, setDecks] = useState<StandardWork[]>([
-    StandardWork.OLD_TESTAMENT,
-    StandardWork.NEW_TESTAMENT,
-  ]);
+  const [decks, setDecks] = useState<StandardWork[]>(
+    Object.values(StandardWork)
+  );
   const [unusedMasteryScriptures, setUnusedMasteryScriptures] = useState(
     decks.map((deck) => masteryScriptures[deck]).flat()
   );
