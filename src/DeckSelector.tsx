@@ -1,5 +1,5 @@
-import { StandardWork } from "./constants";
-import { toTitleCase } from "./utils";
+import { useAppContext } from "./AppProvider";
+import { StandardWork } from "./types";
 
 interface DeckSelectorProps {
   allDecks: StandardWork[];
@@ -12,6 +12,8 @@ const DeckSelector: React.FC<DeckSelectorProps> = ({
   decks,
   setDecks,
 }) => {
+  const { t } = useAppContext();
+
   const onCheck = (deck: StandardWork, isChecked: boolean) => {
     if (isChecked) setDecks((prev) => [...prev, deck]);
     else setDecks((prev) => prev.filter((d) => d !== deck));
@@ -23,7 +25,7 @@ const DeckSelector: React.FC<DeckSelectorProps> = ({
         <label
           key={`${deck}-label`}
           htmlFor={`${deck}-check`}
-          className="flex items-center gap-2 mt-4"
+          className="flex items-center gap-2 mt-2"
         >
           <input
             id={`${deck}-check`}
@@ -31,8 +33,9 @@ const DeckSelector: React.FC<DeckSelectorProps> = ({
             type="checkbox"
             value={deck}
             onChange={(e) => onCheck(deck, e.target.checked)}
+            className="checkbox text-green-700 focus:ring-green-700 h-4 w-4"
           />
-          {toTitleCase(deck)}
+          {t(deck)}
         </label>
       ))}
     </div>

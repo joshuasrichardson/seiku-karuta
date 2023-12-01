@@ -1,27 +1,24 @@
+import { Language, StandardWork } from "./types";
+
 const s3BucketUrl = "https://seiku-karuta.s3.us-west-1.amazonaws.com";
 
-export const introScriptures = [
-  "/Alma_37_34.m4a",
-  "/Alma_37_36.m4a",
-  "/John_3_16.m4a",
-  "/1_Nephi_1_5.m4a",
-  // "/1_Nephi_1_30.m4a",
-  "/Alma_36_19.m4a",
-  "/1_Nephi_17_36.m4a",
-  "/1_Nephi_18_3.m4a",
-  "/2_Nephi_9_6.m4a",
-  "/Mosiah_4_9.m4a",
-  "/Romans_8_16.m4a",
-].map((scripture) => `${s3BucketUrl}/intro${scripture}`);
+export const introScriptures = (language: Language): string[] =>
+  [
+    "/Alma_37_34.m4a",
+    "/Alma_37_36.m4a",
+    "/John_3_16.m4a",
+    "/1_Nephi_1_5.m4a",
+    "/Alma_36_19.m4a",
+    "/1_Nephi_17_36.m4a",
+    "/1_Nephi_18_3.m4a",
+    "/2_Nephi_9_6.m4a",
+    "/Mosiah_4_9.m4a",
+    "/Romans_8_16.m4a",
+  ].map((scripture) => `${s3BucketUrl}/${language}/intro${scripture}`);
 
-export enum StandardWork {
-  OLD_TESTAMENT = "OLD_TESTAMENT",
-  NEW_TESTAMENT = "NEW_TESTAMENT",
-  BOOK_OF_MORMON = "BOOK_OF_MORMON",
-  DOCTRINE_AND_COVENANTS = "DOCTRINE_AND_COVENANTS",
-}
-
-export const masteryScriptures = {
+export const masteryScriptures = (
+  language: Language
+): { [key: string]: string[] } => ({
   [StandardWork.OLD_TESTAMENT]: [
     "/1_Samuel_16_7.m4a",
     "/Abraham_3_22-23.m4a",
@@ -48,7 +45,7 @@ export const masteryScriptures = {
     "/Psalm_24_3-4.m4a",
     "/Psalm_119_105.m4a",
     "/Psalm_127_3.m4a",
-  ].map((scripture) => `${s3BucketUrl}/oldtestament${scripture}`),
+  ].map((scripture) => `${s3BucketUrl}/${language}/oldtestament${scripture}`),
   [StandardWork.NEW_TESTAMENT]: [
     "/Matthew_5_14-16.m4a",
     "/Matthew_11_28-30.m4a",
@@ -75,7 +72,7 @@ export const masteryScriptures = {
     "/John_14_15.m4a",
     "/John_17_3.m4a",
     "/Luke_24_36-39.m4a",
-  ].map((scripture) => `${s3BucketUrl}/newtestament${scripture}`),
+  ].map((scripture) => `${s3BucketUrl}/${language}/newtestament${scripture}`),
   [StandardWork.BOOK_OF_MORMON]: [
     "/3_Nephi_18_15and20-21.m4a",
     "/Alma_7_11-13.m4a",
@@ -102,7 +99,7 @@ export const masteryScriptures = {
     "/2_Nephi_32_3.m4a",
     "/2_Nephi_32_8-9.m4a",
     "/3_Nephi_12_48.m4a",
-  ].map((scripture) => `${s3BucketUrl}/bookofmormon${scripture}`),
+  ].map((scripture) => `${s3BucketUrl}/${language}/bookofmormon${scripture}`),
   [StandardWork.DOCTRINE_AND_COVENANTS]: [
     "/Doctrine_and_Covenants_88_124.m4a",
     "/Doctrine_and_Covenants_89_18-21.m4a",
@@ -129,9 +126,7 @@ export const masteryScriptures = {
     "/Doctrine_and_Covenants_76_40-41.m4a",
     "/Doctrine_and_Covenants_78_19.m4a",
     "/Doctrine_and_Covenants_82_10.m4a",
-  ].map((scripture) => `${s3BucketUrl}/doctrineandcovenants${scripture}`),
-};
-
-export const otherScriptures = [].map(
-  (scripture) => `${s3BucketUrl}/other${scripture}`
-);
+  ].map(
+    (scripture) => `${s3BucketUrl}/${language}/doctrineandcovenants${scripture}`
+  ),
+});
