@@ -19,7 +19,7 @@ const LanguageSelector: React.FC = () => {
           className="text-green-700 text-3xl bg-inherit centered-select"
         >
           {Object.values(Language).map((languageOption) => (
-            <option value={languageOption}>
+            <option key={languageOption} value={languageOption}>
               {translations[languageOption]["Scripture Karuta"]}
             </option>
           ))}

@@ -13,6 +13,7 @@ export const translations: { [key: string]: { [key: string]: string } } = {
     Language: "Language",
     " scriptures remaining": " scriptures remaining",
     Skip: "Skip",
+    "Enable Intro Scriptures": "Enable Intro Scriptures",
   },
   [Language.JAPANESE]: {
     "Scripture Karuta": "聖句歌留多",
@@ -26,5 +27,6 @@ export const translations: { [key: string]: { [key: string]: string } } = {
     Language: "言語",
     " scriptures remaining": "聖句残残っている",
     Skip: "飛ばす",
+    "Enable Intro Scriptures": "イントロ聖句を有効にする",
   },
 };

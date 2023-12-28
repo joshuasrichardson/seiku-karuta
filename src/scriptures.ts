@@ -9,11 +9,11 @@ export const introScriptures = (language: Language): string[] =>
     "/John_3_16.m4a",
     "/1_Nephi_1_5.m4a",
     "/Alma_36_19.m4a",
-    "/1_Nephi_17_36.m4a",
-    "/1_Nephi_18_3.m4a",
-    "/2_Nephi_9_6.m4a",
-    "/Mosiah_4_9.m4a",
-    "/Romans_8_16.m4a",
+    // "/1_Nephi_17_36.m4a",
+    // "/1_Nephi_18_3.m4a",
+    // "/2_Nephi_9_6.m4a",
+    // "/Mosiah_4_9.m4a",
+    // "/Romans_8_16.m4a",
   ].map((scripture) => `${s3BucketUrl}/${language}/intro${scripture}`);
 
 export const masteryScriptures = (

@@ -56,7 +56,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
       audioRef.current?.removeEventListener("timeupdate", handleTimeUpdate);
       audioRef.current?.removeEventListener("ended", handleEnded);
     };
-  }, []);
+  }, [onAudioEnd]);
 
   useEffect(() => {
     if (hasPressedPlay && audioRef.current && src) {
