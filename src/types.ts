@@ -15,3 +15,10 @@ export interface AppContextValue {
   setLanguage: React.Dispatch<React.SetStateAction<Language>>;
   t: (text: string) => string;
 }
+
+export interface ScriptureData {
+  uniqueStart: string;
+  reference: string;
+  fullScripture: string;
+  torifuda: string;
+}

@@ -61,7 +61,7 @@ const ScripturePlayer: React.FC<ScripturePlayerProps> = ({ completeGame }) => {
     }
 
     setIsReadingIntro((prev) => !prev);
-  }, [areIntrosEnabled, isReadingIntro]);
+  }, [areIntrosEnabled, isReadingIntro, unusedMasteryScriptures]);
 
   return (
     <div>
