@@ -689,12 +689,13 @@ const getUniqueStarts = (passages: string[]): string[] => {
 };
 
 export const getUniqueScriptureStarts = (): ScriptureData[] => {
-  const scripturesWithReferences = Object.values(scripturePassages)
-    .map((standardWork) => {
-      return Object.entries(standardWork).map(([reference, scripture]) => {
+  const scripturesWithReferences = Object.entries(scripturePassages)
+    .map(([standardWork, passages]) => {
+      return Object.entries(passages).map(([reference, scripture]) => {
         return {
           ...scripture,
           reference,
+          standardWork: standardWork as StandardWork,
         };
       });
     })
@@ -717,4 +718,19 @@ export const getUniqueScriptureStarts = (): ScriptureData[] => {
   );
 
   return sortedStarts;
+};
+
+export const getSrc = (
+  language: Language,
+  scriptureData: ScriptureData
+): string => {
+  const { reference, standardWork } = scriptureData;
+  const fileName = `${reference
+    .replaceAll(" ", "_")
+    .replaceAll(",", "and")
+    .replaceAll(":", "_")}.m4a`;
+
+  return `${s3BucketUrl}/${language}/${standardWork
+    .toLowerCase()
+    .replaceAll(" ", "")}/${fileName}`;
 };

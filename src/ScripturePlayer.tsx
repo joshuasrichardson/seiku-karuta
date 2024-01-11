@@ -1,16 +1,24 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { ReactNode, useCallback, useEffect, useState } from "react";
 import AudioPlayer from "./AudioPlayer";
 import { introScriptures, masteryScriptures } from "./scriptures";
 import { getRandomItemFromArray, removeRandomItemFromArray } from "./utils";
 import DeckSelector from "./DeckSelector";
-import { StandardWork } from "./types";
+import { AudioPlayerSize, StandardWork } from "./types";
 import { useAppContext } from "./AppProvider";
+
+interface PlayingFieldProps {
+  scriptureSrc?: string;
+}
 
 interface ScripturePlayerProps {
   completeGame: () => void;
+  playingField?: ({ scriptureSrc }: PlayingFieldProps) => ReactNode;
 }
 
-const ScripturePlayer: React.FC<ScripturePlayerProps> = ({ completeGame }) => {
+const ScripturePlayer: React.FC<ScripturePlayerProps> = ({
+  completeGame,
+  playingField,
+}) => {
   const { language, t } = useAppContext();
 
   const [areIntrosEnabled, setAreIntrosEnabled] = useState(true);
@@ -63,8 +71,8 @@ const ScripturePlayer: React.FC<ScripturePlayerProps> = ({ completeGame }) => {
     setIsReadingIntro((prev) => !prev);
   }, [areIntrosEnabled, isReadingIntro, unusedMasteryScriptures]);
 
-  return (
-    <div>
+  const ScripturePlayerContents = () => (
+    <>
       <label
         htmlFor={`intro-enabled-check`}
         className="flex items-center gap-2 mb-6 -mt-6"
@@ -94,7 +102,33 @@ const ScripturePlayer: React.FC<ScripturePlayerProps> = ({ completeGame }) => {
         {unusedMasteryScriptures.length}
         {t(" scriptures remaining")}
       </div>
-    </div>
+    </>
+  );
+
+  return (
+    <>
+      {playingField ? (
+        <>
+          {playingField({ scriptureSrc })}
+          <div className="fixed top-2 right-2">
+            <AudioPlayer
+              size={AudioPlayerSize.SMALL}
+              src={scriptureSrc}
+              onAudioEnd={onAudioEnd}
+              color={
+                isReadingIntro
+                  ? "text-green-700"
+                  : "text-blue-700 animate-pulse"
+              }
+            />
+          </div>
+        </>
+      ) : (
+        <div>
+          <ScripturePlayerContents />
+        </div>
+      )}
+    </>
   );
 };
 

@@ -21,4 +21,10 @@ export interface ScriptureData {
   reference: string;
   fullScripture: string;
   torifuda: string;
+  standardWork: StandardWork;
+}
+
+export enum AudioPlayerSize {
+  SMALL = "small",
+  LARGE = "large",
 }
