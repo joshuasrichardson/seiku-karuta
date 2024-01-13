@@ -1,5 +1,5 @@
 import React from "react";
-import { ScriptureData } from "./types";
+import { OnHitCardProps, ScriptureData } from "./types";
 import Torifuda from "./Torifuda";
 
 interface TorifudaGroupProps {
@@ -7,7 +7,7 @@ interface TorifudaGroupProps {
   chosenScripture?: ScriptureData;
   transitionX: number;
   transitionY: number;
-  hitCardMobile: any;
+  hitCard: (props: OnHitCardProps) => void;
   hitCardDesktop: any;
   scriptureSrc?: string;
   isMine: boolean;
@@ -18,7 +18,7 @@ const TorifudaGroup: React.FC<TorifudaGroupProps> = ({
   chosenScripture,
   transitionX,
   transitionY,
-  hitCardMobile,
+  hitCard,
   hitCardDesktop,
   scriptureSrc,
   isMine,
@@ -43,10 +43,11 @@ const TorifudaGroup: React.FC<TorifudaGroupProps> = ({
               chosenScripture={chosenScripture}
               transitionX={transitionX}
               transitionY={transitionY}
-              hitCardMobile={hitCardMobile}
+              hitCard={hitCard}
               hitCardDesktop={hitCardDesktop}
               scriptureSrc={scriptureSrc}
               isMine={isMine}
+              index={index}
             />
           );
         } else

@@ -1,15 +1,16 @@
 import React from "react";
-import { ScriptureData } from "./types";
+import { OnHitCardProps, ScriptureData } from "./types";
 
 interface TorifudaProps {
   scripture: ScriptureData;
   chosenScripture?: ScriptureData;
   transitionX: number;
   transitionY: number;
-  hitCardMobile: any;
-  hitCardDesktop: any;
+  hitCard: (props: OnHitCardProps) => void;
+  hitCardDesktop: any; // TODO: Fix this type
   scriptureSrc?: string;
   isMine: boolean;
+  index: number;
 }
 
 const Torifuda: React.FC<TorifudaProps> = ({
@@ -17,10 +18,11 @@ const Torifuda: React.FC<TorifudaProps> = ({
   chosenScripture,
   transitionX,
   transitionY,
-  hitCardMobile,
+  hitCard,
   hitCardDesktop,
   scriptureSrc,
   isMine,
+  index,
 }) => {
   return (
     <div
@@ -43,14 +45,21 @@ const Torifuda: React.FC<TorifudaProps> = ({
           overflowWrap: "break-word",
         }}
         onMouseMove={(event) =>
-          hitCardDesktop({ event, card: scripture, scriptureSrc })
+          hitCardDesktop({
+            event,
+            card: scripture,
+            isMine,
+            scriptureSrc,
+            index,
+          })
         }
         onTouchMove={(event) =>
-          hitCardMobile({
+          hitCard({
             isMine,
             event,
             card: scripture,
             scriptureSrc,
+            index,
           })
         }
       >

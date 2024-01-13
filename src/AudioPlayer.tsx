@@ -8,6 +8,8 @@ interface AudioPlayerProps {
   color?: string;
   size?: AudioPlayerSize;
   onAudioEnd: () => void;
+  hasPressedPlay: boolean;
+  setHasPressedPlay: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AudioPlayer: React.FC<AudioPlayerProps> = ({
@@ -15,12 +17,13 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
   color = "text-green-700",
   size = AudioPlayerSize.LARGE,
   onAudioEnd,
+  hasPressedPlay,
+  setHasPressedPlay,
 }) => {
   const { t } = useAppContext();
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [hasPressedPlay, setHasPressedPlay] = useState(false);
   const [progress, setProgress] = useState(0);
   const [playbackRate, setPlaybackRate] = useState(1);
 
@@ -64,9 +67,13 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
   useEffect(() => {
     if (hasPressedPlay && audioRef.current && src) {
       audioRef.current.load();
-      audioRef.current.play();
-      setIsPlaying(true);
-      audioRef.current.playbackRate = playbackRate;
+      setTimeout(() => {
+        if (hasPressedPlay && audioRef.current && src) {
+          audioRef.current.play();
+          setIsPlaying(true);
+          audioRef.current.playbackRate = playbackRate;
+        }
+      }, 50);
     }
   }, [src]);
 

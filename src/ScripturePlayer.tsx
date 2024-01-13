@@ -3,7 +3,7 @@ import AudioPlayer from "./AudioPlayer";
 import { introScriptures, masteryScriptures } from "./scriptures";
 import { getRandomItemFromArray, removeRandomItemFromArray } from "./utils";
 import DeckSelector from "./DeckSelector";
-import { AudioPlayerSize, StandardWork } from "./types";
+import { AudioPlayerSize } from "./types";
 import { useAppContext } from "./AppProvider";
 
 interface PlayingFieldProps {
@@ -19,17 +19,15 @@ const ScripturePlayer: React.FC<ScripturePlayerProps> = ({
   completeGame,
   playingField,
 }) => {
-  const { language, t } = useAppContext();
+  const { language, t, decks, areIntrosEnabled, setAreIntrosEnabled } =
+    useAppContext();
 
-  const [areIntrosEnabled, setAreIntrosEnabled] = useState(true);
   const [scriptureSrc, setScriptureSrc] = useState<string | undefined>();
-  const [decks, setDecks] = useState<StandardWork[]>(
-    Object.values(StandardWork)
-  );
   const [unusedMasteryScriptures, setUnusedMasteryScriptures] = useState(
     decks.map((deck) => masteryScriptures(language)[deck]).flat()
   );
   const [isReadingIntro, setIsReadingIntro] = useState(true);
+  const [hasPressedPlay, setHasPressedPlay] = useState(false);
 
   useEffect(() => {
     setUnusedMasteryScriptures(
@@ -92,12 +90,10 @@ const ScripturePlayer: React.FC<ScripturePlayerProps> = ({
         color={
           isReadingIntro ? "text-green-700" : "text-blue-700 animate-pulse"
         }
+        hasPressedPlay={hasPressedPlay}
+        setHasPressedPlay={setHasPressedPlay}
       />
-      <DeckSelector
-        allDecks={Object.values(StandardWork)}
-        decks={decks}
-        setDecks={setDecks}
-      />
+      <DeckSelector />
       <div className="text-xs flex items-center justify-center my-6">
         {unusedMasteryScriptures.length}
         {t(" scriptures remaining")}
@@ -120,6 +116,8 @@ const ScripturePlayer: React.FC<ScripturePlayerProps> = ({
                   ? "text-green-700"
                   : "text-blue-700 animate-pulse"
               }
+              hasPressedPlay={hasPressedPlay}
+              setHasPressedPlay={setHasPressedPlay}
             />
           </div>
         </>

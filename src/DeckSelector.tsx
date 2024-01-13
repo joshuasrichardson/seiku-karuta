@@ -1,18 +1,10 @@
 import { useAppContext } from "./AppProvider";
 import { StandardWork } from "./types";
 
-interface DeckSelectorProps {
-  allDecks: StandardWork[];
-  decks: StandardWork[];
-  setDecks: React.Dispatch<React.SetStateAction<StandardWork[]>>;
-}
+const DeckSelector: React.FC = () => {
+  const { t, decks, setDecks } = useAppContext();
 
-const DeckSelector: React.FC<DeckSelectorProps> = ({
-  allDecks,
-  decks,
-  setDecks,
-}) => {
-  const { t } = useAppContext();
+  const allDecks = Object.values(StandardWork);
 
   const onCheck = (deck: StandardWork, isChecked: boolean) => {
     if (isChecked) setDecks((prev) => [...prev, deck]);

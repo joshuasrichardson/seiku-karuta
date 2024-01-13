@@ -14,6 +14,10 @@ export interface AppContextValue {
   language: Language;
   setLanguage: React.Dispatch<React.SetStateAction<Language>>;
   t: (text: string) => string;
+  decks: StandardWork[];
+  setDecks: React.Dispatch<React.SetStateAction<StandardWork[]>>;
+  areIntrosEnabled: boolean;
+  setAreIntrosEnabled: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface ScriptureData {
@@ -27,4 +31,12 @@ export interface ScriptureData {
 export enum AudioPlayerSize {
   SMALL = "small",
   LARGE = "large",
+}
+
+export interface OnHitCardProps {
+  event: React.TouchEvent<HTMLDivElement>;
+  card: ScriptureData;
+  isMine: boolean;
+  scriptureSrc?: string;
+  index: number;
 }

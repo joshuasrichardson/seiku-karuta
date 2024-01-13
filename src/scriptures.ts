@@ -173,7 +173,7 @@ export const scripturePassages = {
     "Exodus 20:3-17": {
       fullScripture:
         "Thou shalt have no other gods before me. Thou shalt not make unto thee any graven image, or any likeness of any thing that is in heaven above, or that is in the earth beneath, or that is in the water under the earth: Thou shalt not bow down thyself to them, nor serve them: for I the Lord thy God am a jealous God, visiting the iniquity of the fathers upon the children unto the third and fourth generation of them that hate me; And shewing mercy unto thousands of them that love me, and keep my commandments. Thou shalt not take the name of the Lord thy God in vain; for the Lord will not hold him guiltless that taketh his name in vain. Remember the sabbath day, to keep it holy. Six days shalt thou labour, and do all thy work: But the seventh day is the sabbath of the Lord thy God: in it thou shalt not do any work, thou, nor thy son, nor thy daughter, thy manservant, nor thy maidservant, nor thy cattle, nor thy stranger that is within thy gates: For in six days the Lord made heaven and earth, the sea, and all that in them is, and rested the seventh day: wherefore the Lord blessed the sabbath day, and hallowed it. Honour thy father and thy mother: that thy days may be long upon the land which the Lord thy God giveth thee. Thou shalt not kill. Thou shalt not commit adultery. Thou shalt not steal. Thou shalt not bear false witness against thy neighbour. Thou shalt not covet thy neighbour's house, thou shalt not covet thy neighbour's wife, nor his manservant, nor his maidservant, nor his ox, nor his ass, nor any thing that is thy neighbour's.",
-      torifuda: "nor any thing that is thy neighbour’s.",
+      torifuda: "nor any thing that is thy neighbour's.",
     },
     "Joshua 24:15": {
       fullScripture:
@@ -491,7 +491,7 @@ export const scripturePassages = {
         "Therefore I would that ye should be perfect even as I, or your Father who is in heaven is perfect.",
       torifuda: "or your Father who is in heaven is perfect.",
     },
-    "3 Nephi 18:15, 20-21": {
+    "3 Nephi 18:15,20-21": {
       fullScripture:
         "Verily, verily, I say unto you, ye must watch and pray always, lest ye be tempted by the devil, and ye be led away captive by him. And whatsoever ye shall ask the Father in my name, which is right, believing that ye shall receive, behold it shall be given unto you. Pray in your families unto the Father, always in my name, that your wives and your children may be blessed.",
       torifuda: "that your wives and your children may be blessed.",
@@ -688,8 +688,11 @@ const getUniqueStarts = (passages: string[]): string[] => {
   });
 };
 
-export const getUniqueScriptureStarts = (): ScriptureData[] => {
+export const getUniqueScriptureStarts = (
+  decks: StandardWork[]
+): ScriptureData[] => {
   const scripturesWithReferences = Object.entries(scripturePassages)
+    .filter(([standardWork]) => decks.includes(standardWork as StandardWork))
     .map(([standardWork, passages]) => {
       return Object.entries(passages).map(([reference, scripture]) => {
         return {

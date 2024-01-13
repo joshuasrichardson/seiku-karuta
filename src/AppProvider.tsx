@@ -4,13 +4,17 @@ import React, {
   useContext,
   useState,
 } from "react";
-import { AppContextValue, Language } from "./types";
+import { AppContextValue, Language, StandardWork } from "./types";
 import { translations } from "./translations";
 
 const AppContext = createContext<AppContextValue>({
   language: Language.ENGLISH,
   setLanguage: () => null,
   t: (text: string) => text,
+  decks: Object.values(StandardWork),
+  setDecks: () => null,
+  areIntrosEnabled: true,
+  setAreIntrosEnabled: () => null,
 });
 
 interface AppProviderProps {
@@ -19,6 +23,10 @@ interface AppProviderProps {
 
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [language, setLanguage] = useState(Language.ENGLISH);
+  const [decks, setDecks] = useState<StandardWork[]>(
+    Object.values(StandardWork)
+  );
+  const [areIntrosEnabled, setAreIntrosEnabled] = useState(true);
 
   const t = (text: string): string => {
     return translations[language][text] || text;
@@ -28,6 +36,10 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     language,
     setLanguage,
     t,
+    decks,
+    setDecks,
+    areIntrosEnabled,
+    setAreIntrosEnabled,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
