@@ -79,7 +79,7 @@ const ScripturePlayer: React.FC<ScripturePlayerProps> = ({
           id={`intro-enabled-check`}
           checked={areIntrosEnabled}
           type="checkbox"
-          onChange={() => setAreIntrosEnabled((prev) => !prev)}
+          onChange={(e) => setAreIntrosEnabled(e.target.checked)}
           className="checkbox text-green-700 focus:ring-green-700 h-4 w-4"
         />
         {t("Enable Intro Scriptures")}

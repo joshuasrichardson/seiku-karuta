@@ -1,26 +1,20 @@
 import React from "react";
-import { OnHitCardProps, ScriptureData } from "./types";
+import { ScriptureData } from "./types";
 import Torifuda from "./Torifuda";
 
 interface TorifudaGroupProps {
   cards: ScriptureData[];
-  chosenScripture?: ScriptureData;
+  chosenScriptures: ScriptureData[];
   transitionX: number;
   transitionY: number;
-  hitCard: (props: OnHitCardProps) => void;
-  hitCardDesktop: any;
-  scriptureSrc?: string;
   isMine: boolean;
 }
 
 const TorifudaGroup: React.FC<TorifudaGroupProps> = ({
   cards,
-  chosenScripture,
+  chosenScriptures,
   transitionX,
   transitionY,
-  hitCard,
-  hitCardDesktop,
-  scriptureSrc,
   isMine,
 }) => {
   return (
@@ -33,6 +27,9 @@ const TorifudaGroup: React.FC<TorifudaGroupProps> = ({
             }
           : {}
       }
+      onTouchMove={(event) => {
+        console.log("MOVE", event);
+      }}
     >
       {cards.map((scripture, index) => {
         if (scripture.reference) {
@@ -40,12 +37,9 @@ const TorifudaGroup: React.FC<TorifudaGroupProps> = ({
             <Torifuda
               key={scripture.reference}
               scripture={scripture}
-              chosenScripture={chosenScripture}
+              chosenScriptures={chosenScriptures}
               transitionX={transitionX}
               transitionY={transitionY}
-              hitCard={hitCard}
-              hitCardDesktop={hitCardDesktop}
-              scriptureSrc={scriptureSrc}
               isMine={isMine}
               index={index}
             />

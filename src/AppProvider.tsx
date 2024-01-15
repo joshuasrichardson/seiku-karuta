@@ -15,6 +15,8 @@ const AppContext = createContext<AppContextValue>({
   setDecks: () => null,
   areIntrosEnabled: true,
   setAreIntrosEnabled: () => null,
+  playbackRate: 1,
+  setPlaybackRate: () => null,
 });
 
 interface AppProviderProps {
@@ -27,6 +29,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     Object.values(StandardWork)
   );
   const [areIntrosEnabled, setAreIntrosEnabled] = useState(true);
+  const [playbackRate, setPlaybackRate] = useState(1);
 
   const t = (text: string): string => {
     return translations[language][text] || text;
@@ -40,6 +43,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     setDecks,
     areIntrosEnabled,
     setAreIntrosEnabled,
+    playbackRate,
+    setPlaybackRate,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

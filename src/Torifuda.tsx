@@ -1,34 +1,34 @@
 import React from "react";
-import { OnHitCardProps, ScriptureData } from "./types";
+import { ScriptureData } from "./types";
 
 interface TorifudaProps {
   scripture: ScriptureData;
-  chosenScripture?: ScriptureData;
+  chosenScriptures: ScriptureData[];
   transitionX: number;
   transitionY: number;
-  hitCard: (props: OnHitCardProps) => void;
-  hitCardDesktop: any; // TODO: Fix this type
-  scriptureSrc?: string;
   isMine: boolean;
   index: number;
 }
 
 const Torifuda: React.FC<TorifudaProps> = ({
   scripture,
-  chosenScripture,
+  chosenScriptures,
   transitionX,
   transitionY,
-  hitCard,
-  hitCardDesktop,
-  scriptureSrc,
   isMine,
   index,
 }) => {
+  const isChosen = () => {
+    return !!chosenScriptures.find(
+      (chosenScripture) => chosenScripture.torifuda === scripture.torifuda
+    );
+  };
+
   return (
     <div
       key={scripture.torifuda}
       style={
-        scripture.torifuda === chosenScripture?.torifuda
+        isChosen()
           ? {
               transform: `translateX(${transitionX}px) translateY(${transitionY}px)`,
               transition: "transform 0.3s linear",
@@ -44,24 +44,8 @@ const Torifuda: React.FC<TorifudaProps> = ({
           transform: "rotate(180deg)",
           overflowWrap: "break-word",
         }}
-        onMouseMove={(event) =>
-          hitCardDesktop({
-            event,
-            card: scripture,
-            isMine,
-            scriptureSrc,
-            index,
-          })
-        }
-        onTouchMove={(event) =>
-          hitCard({
-            isMine,
-            event,
-            card: scripture,
-            scriptureSrc,
-            index,
-          })
-        }
+        data-index={index}
+        data-is-mine={isMine}
       >
         {scripture.torifuda}
       </div>

@@ -20,12 +20,11 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
   hasPressedPlay,
   setHasPressedPlay,
 }) => {
-  const { t } = useAppContext();
+  const { t, playbackRate, setPlaybackRate } = useAppContext();
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [playbackRate, setPlaybackRate] = useState(1);
 
   const handlePlayPause = () => {
     setHasPressedPlay(true);

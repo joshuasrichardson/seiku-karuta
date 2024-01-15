@@ -18,6 +18,8 @@ export interface AppContextValue {
   setDecks: React.Dispatch<React.SetStateAction<StandardWork[]>>;
   areIntrosEnabled: boolean;
   setAreIntrosEnabled: React.Dispatch<React.SetStateAction<boolean>>;
+  playbackRate: number;
+  setPlaybackRate: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export interface ScriptureData {
@@ -34,7 +36,8 @@ export enum AudioPlayerSize {
 }
 
 export interface OnHitCardProps {
-  event: React.TouchEvent<HTMLDivElement>;
+  x: number;
+  y: number;
   card: ScriptureData;
   isMine: boolean;
   scriptureSrc?: string;
