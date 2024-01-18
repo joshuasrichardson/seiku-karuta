@@ -35,11 +35,12 @@ export enum AudioPlayerSize {
   LARGE = "large",
 }
 
-export interface OnHitCardProps {
+export interface Coordinates {
   x: number;
   y: number;
-  card: ScriptureData;
-  isMine: boolean;
+}
+
+export interface OnHitCardProps {
+  transition: Coordinates;
   scriptureSrc?: string;
-  index: number;
 }

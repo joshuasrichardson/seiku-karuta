@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ScripturePlayer from "./ScripturePlayer";
-import { getSrc, getUniqueScriptureStarts } from "./scriptures";
-import { OnHitCardProps, ScriptureData, StandardWork } from "./types";
+import { getUniqueScriptureStarts } from "./scriptures";
+import { Coordinates, OnHitCardProps, ScriptureData } from "./types";
 import { useAppContext } from "./AppProvider";
 import TorifudaGroup from "./TorifudaGroup";
+import {
+  coordinatesToKey,
+  generateCoordinates,
+  getClosestPointCoordinates,
+  keyToCoordinates,
+} from "./utils";
 
 interface GameScreenProps {
   children: React.ReactNode;
@@ -21,7 +27,7 @@ const shuffleArray = (array: any[]) => {
 };
 
 const GameBoard: React.FC<GameScreenProps> = () => {
-  const { language, decks } = useAppContext();
+  const { decks } = useAppContext();
 
   const numCardsPerDeck = 25;
   const numCards = decks.length * numCardsPerDeck;
@@ -38,77 +44,116 @@ const GameBoard: React.FC<GameScreenProps> = () => {
   const [theirTorifuda, setTheirTorifuda] = useState(
     torifuda.slice(numCardsPerPlayer)
   );
+  const [hitFunctions, setHitFunctions] = useState(
+    new Map<string, (props: OnHitCardProps) => void>()
+  );
+  const [sortedPointKeyXs, setSortedPointKeyXs] = useState<number[]>([]);
+  const [sortedPointKeyYs, setSortedPointKeyYs] = useState<number[]>([]);
+  const [touch, setTouch] = useState<{ x?: number; y?: number }>({
+    x: undefined,
+    y: undefined,
+  });
 
-  const [chosenScriptures, setChosenScriptures] = useState<ScriptureData[]>([]);
-  const [transitionX, setTransitionX] = useState(0);
-  const [transitionY, setTransitionY] = useState(0);
-  const [touchX, setTouchX] = useState<number | undefined>();
-  const [touchY, setTouchY] = useState<number | undefined>();
+  useEffect(() => {
+    setSortedPointKeyXs(
+      [
+        ...new Set(
+          Array.from(hitFunctions.keys()).map((p) => keyToCoordinates(p).x)
+        ),
+      ].sort((a, b) => a - b)
+    );
+    setSortedPointKeyYs(
+      [
+        ...new Set(
+          Array.from(hitFunctions.keys()).map((p) => keyToCoordinates(p).y)
+        ),
+      ].sort((a, b) => a - b)
+    );
+  }, [hitFunctions]);
 
-  const onHitFinish = ({
-    card,
-    isMine,
+  const getClosestPointsCoordinates = ({
+    x,
+    y,
+    previousX,
+    previousY,
+  }: {
+    x: number;
+    y: number;
+    previousX: number;
+    previousY: number;
+  }) => {
+    const points = generateCoordinates({
+      x,
+      y,
+      previousX,
+      previousY,
+      numPoints: 9,
+    });
+
+    const closestPoints = points.map(({ x, y }) => {
+      const closestPointKey = getClosestPointCoordinates({
+        x,
+        y,
+        xs: sortedPointKeyXs,
+        ys: sortedPointKeyYs,
+      });
+      return closestPointKey;
+    });
+
+    return closestPoints;
+  };
+
+  const onTouchMove = async ({
+    x,
+    y,
     scriptureSrc,
-    index,
-  }: OnHitCardProps) => {
-    if (getSrc(language, card) === scriptureSrc) {
-      const placeholder = {
-        uniqueStart: "",
-        reference: "",
-        fullScripture: "",
-        torifuda: "",
-        standardWork: StandardWork.BOOK_OF_MORMON,
-      };
-      if (isMine) {
-        setMyTorifuda((prev) => [
-          ...prev.slice(0, index),
-          placeholder,
-          ...prev.slice(index + 1),
-        ]);
-      } else {
-        setTheirTorifuda((prev) => [
-          ...prev.slice(0, index),
-          placeholder,
-          ...prev.slice(index + 1),
-        ]);
-      }
-    }
-  };
+  }: {
+    x: number;
+    y: number;
+    scriptureSrc?: string;
+  }) => {
+    const closestPointCoordinates = getClosestPointsCoordinates({
+      x,
+      y,
+      previousX: touch.x || x,
+      previousY: touch.y || y,
+    });
 
-  const onInitialContact = (props: OnHitCardProps) => {
-    setChosenScriptures((prev) => [...prev, props.card]);
-    setTouchX(props.x);
-    setTouchY(props.y);
-    setTimeout(() => {
-      onHitFinish(props);
-    }, 400);
-  };
+    const uniqueClosestPointCoordinates = [
+      ...new Set(closestPointCoordinates),
+    ].filter((coordinates) => !!coordinates);
 
-  const onSlide = ({ x, y, isMine }: OnHitCardProps) => {
-    if (!touchX || !touchY) return;
-    const moveX = (x - touchX) * (isMine ? -1 : 1);
-    const moveY = (y - touchY) * (isMine ? -1 : 1);
+    if (!uniqueClosestPointCoordinates.length) return;
+
+    if (touch.x === undefined || touch.y === undefined) return;
+    const moveX = x - touch.x;
+    const moveY = y - touch.y;
 
     const diagonalMove = Math.sqrt(Math.pow(moveX, 2) + Math.pow(moveY, 2));
     const ratio = diagonalMove !== 0 ? 500 / diagonalMove : 0;
 
-    setTransitionX(moveX * ratio);
-    setTransitionY(moveY * ratio);
-    setTouchX(undefined);
-    setTouchY(undefined);
+    const transition = { x: moveX * ratio, y: moveY * ratio };
 
-    setTimeout(() => {
-      setTransitionX(0);
-      setTransitionY(0);
-      setChosenScriptures([]);
-    }, 500);
+    uniqueClosestPointCoordinates.forEach((coordinates) => {
+      const hitCard = hitFunctions.get(coordinatesToKey(coordinates) || "");
+      if (!!hitCard) {
+        hitCard({
+          transition,
+          scriptureSrc,
+        });
+      }
+    });
   };
 
-  const hitCard = (props: OnHitCardProps) => {
-    if (!props.scriptureSrc) return;
-
-    if (touchX && touchY) onSlide(props);
-    else onInitialContact(props);
+  const registerHitFunction = (
+    key: string,
+    hitFunction: (props: OnHitCardProps) => void
+  ) => {
+    setHitFunctions((prev) => {
+      const newMap = new Map(prev);
+      newMap.set(key, hitFunction);
+      return newMap;
+    });
   };
 
   return (
@@ -118,50 +163,37 @@ const GameBoard: React.FC<GameScreenProps> = () => {
         playingField={({ scriptureSrc }) => (
           <div
             className="flex flex-col h-full justify-between p-1"
-            onTouchMove={(event) => {
-              const touchingElement = document.elementFromPoint(
-                event.touches[0].clientX,
-                event.touches[0].clientY
-              ) as HTMLElement;
-              console.log(touchingElement);
-
-              const touchedTorifuda = touchingElement?.innerText;
-              if (!touchedTorifuda) return;
-
-              const isMine =
-                touchingElement?.getAttribute("data-is-mine") === "true";
-
-              const card = isMine
-                ? myTorifuda.find(
-                    (torifuda) => torifuda.torifuda === touchedTorifuda
-                  )
-                : theirTorifuda.find(
-                    (torifuda) => torifuda.torifuda === touchedTorifuda
-                  );
-              if (!card) return;
-
-              hitCard({
+            style={{ marginTop: -58, paddingTop: 58 }}
+            onTouchMove={(event) =>
+              onTouchMove({
                 x: event.touches[0].clientX,
                 y: event.touches[0].clientY,
                 scriptureSrc,
-                isMine,
-                index: Number(touchingElement?.getAttribute("data-index")),
-                card,
+              })
+            }
+            onTouchStart={(event) => {
+              setTouch({
+                x: event.touches[0].clientX,
+                y: event.touches[0].clientY,
               });
             }}
+            onTouchEnd={(event) =>
+              setTouch({
+                x: undefined,
+                y: undefined,
+              })
+            }
           >
             <TorifudaGroup
               cards={theirTorifuda}
-              chosenScriptures={chosenScriptures}
-              transitionX={transitionX}
-              transitionY={transitionY}
+              registerHitFunction={registerHitFunction}
+              setTorifuda={setTheirTorifuda}
               isMine={false}
             />
             <TorifudaGroup
               cards={myTorifuda}
-              chosenScriptures={chosenScriptures}
-              transitionX={transitionX}
-              transitionY={transitionY}
+              registerHitFunction={registerHitFunction}
+              setTorifuda={setMyTorifuda}
               isMine={true}
             />
           </div>

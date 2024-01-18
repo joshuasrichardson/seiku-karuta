@@ -1,40 +1,110 @@
-import React from "react";
-import { ScriptureData } from "./types";
+import React, {
+  LegacyRef,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import {
+  Coordinates,
+  OnHitCardProps,
+  ScriptureData,
+  StandardWork,
+} from "./types";
+import { useAppContext } from "./AppProvider";
+import { getSrc } from "./scriptures";
+import { coordinatesToKey } from "./utils";
 
 interface TorifudaProps {
   scripture: ScriptureData;
-  chosenScriptures: ScriptureData[];
-  transitionX: number;
-  transitionY: number;
   isMine: boolean;
   index: number;
+  setTorifuda: React.Dispatch<React.SetStateAction<ScriptureData[]>>;
+  registerHitFunction: (
+    key: string,
+    hitFunction: (props: OnHitCardProps) => void
+  ) => void;
 }
 
 const Torifuda: React.FC<TorifudaProps> = ({
   scripture,
-  chosenScriptures,
-  transitionX,
-  transitionY,
   isMine,
   index,
+  setTorifuda,
+  registerHitFunction,
 }) => {
-  const isChosen = () => {
-    return !!chosenScriptures.find(
-      (chosenScripture) => chosenScripture.torifuda === scripture.torifuda
-    );
+  const { language } = useAppContext();
+
+  const [transition, setTransition] = useState({ x: 0, y: 0 });
+  const [isChosen, setIsChosen] = useState(false);
+  const [center, setCenter] = useState<Coordinates | undefined>();
+
+  const onHitFinish = ({ scriptureSrc }: OnHitCardProps) => {
+    if (getSrc(language, scripture) === scriptureSrc) {
+      const placeholder = {
+        uniqueStart: "",
+        reference: "",
+        fullScripture: "",
+        torifuda: "",
+        standardWork: StandardWork.BOOK_OF_MORMON,
+      };
+      setTorifuda((prev) => [
+        ...prev.slice(0, index),
+        placeholder,
+        ...prev.slice(index + 1),
+      ]);
+    }
   };
+
+  const onSlide = ({ transition, scriptureSrc }: OnHitCardProps) => {
+    setIsChosen(true);
+    const adjustedTransition = isMine
+      ? { x: -transition.x, y: -transition.y }
+      : transition;
+
+    setTimeout(() => {
+      onHitFinish({ transition: adjustedTransition, scriptureSrc });
+    }, 400);
+
+    setTransition(adjustedTransition);
+
+    setTimeout(() => {
+      setTransition({ x: 0, y: 0 });
+      setIsChosen(false);
+    }, 500);
+  };
+
+  const hitCard = useCallback(
+    (props: OnHitCardProps) => {
+      onSlide(props);
+    },
+    [isChosen]
+  );
+
+  useEffect(() => {
+    if (!center) return;
+    registerHitFunction(coordinatesToKey(center), hitCard);
+  }, [center]);
+
+  const ref = useRef<HTMLDivElement>();
+
+  useEffect(() => {
+    if (!ref?.current) return;
+    const rect = ref?.current?.getBoundingClientRect();
+    if (!rect) return;
+    const x = (rect.right + rect.left) / 2;
+    const y = (rect.top + rect.bottom) / 2;
+    setCenter({ x, y });
+  }, [ref?.current]);
 
   return (
     <div
+      ref={ref as LegacyRef<HTMLDivElement>}
       key={scripture.torifuda}
-      style={
-        isChosen()
-          ? {
-              transform: `translateX(${transitionX}px) translateY(${transitionY}px)`,
-              transition: "transform 0.3s linear",
-            }
-          : {}
-      }
+      style={{
+        transform: `translateX(${transition.x}px) translateY(${transition.y}px)`,
+        transition: "transform 0.3s linear",
+      }}
     >
       <div
         className="bg-yellow-50 p-0.5 m-0.5 rounded-sm w-12 h-16 border border-green-700 overflow-wrap text-left"
