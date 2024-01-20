@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ScripturePlayer from "./ScripturePlayer";
 import { getUniqueScriptureStarts } from "./scriptures";
-import { Coordinates, OnHitCardProps, ScriptureData } from "./types";
+import { OnHitCardProps, ScriptureData } from "./types";
 import { useAppContext } from "./AppProvider";
 import TorifudaGroup from "./TorifudaGroup";
 import {
@@ -177,7 +177,7 @@ const GameBoard: React.FC<GameScreenProps> = () => {
                 y: event.touches[0].clientY,
               });
             }}
-            onTouchEnd={(event) =>
+            onTouchEnd={() =>
               setTouch({
                 x: undefined,
                 y: undefined,

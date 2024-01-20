@@ -33,7 +33,7 @@ const Torifuda: React.FC<TorifudaProps> = ({
   setTorifuda,
   registerHitFunction,
 }) => {
-  const { language } = useAppContext();
+  const { language, t } = useAppContext();
 
   const [transition, setTransition] = useState({ x: 0, y: 0 });
   const [isChosen, setIsChosen] = useState(false);
@@ -117,7 +117,7 @@ const Torifuda: React.FC<TorifudaProps> = ({
         data-index={index}
         data-is-mine={isMine}
       >
-        {scripture.torifuda}
+        {t(scripture.torifuda)}
       </div>
     </div>
   );

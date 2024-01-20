@@ -32,7 +32,11 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [playbackRate, setPlaybackRate] = useState(1);
 
   const t = (text: string): string => {
-    return translations[language][text] || text;
+    if (!translations[language][text]) {
+      console.log(`Missing translation for ${text}`);
+      return text;
+    }
+    return translations[language][text];
   };
 
   const value = {

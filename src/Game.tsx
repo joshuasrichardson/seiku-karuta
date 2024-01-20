@@ -4,6 +4,7 @@ import ScripturePlayer from "./ScripturePlayer";
 import Study from "./Study";
 import GameBoard from "./GameBoard";
 import Menu from "./Menu";
+import { useAppContext } from "./AppProvider";
 
 const gameBoard = (
   <GameBoard>
@@ -16,6 +17,7 @@ const menu = <Menu />;
 
 const Game: React.FC = () => {
   const [gameScreen, setGameScreen] = useState(menu);
+  const { t } = useAppContext();
 
   return (
     <>
@@ -31,9 +33,9 @@ const Game: React.FC = () => {
           onClick={() =>
             setGameScreen((prev) => (prev === gameBoard ? menu : gameBoard))
           }
-          className="-mb-4"
+          className="z-10 -mb-4"
         >
-          {gameScreen === menu ? "Play" : "Menu"}
+          {gameScreen === menu ? t("Start") : t("Menu")}
         </button>
         {gameScreen}
       </div>

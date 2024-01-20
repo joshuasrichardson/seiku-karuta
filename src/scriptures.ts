@@ -185,7 +185,7 @@ export const scripturePassages = {
         "But the Lord said unto Samuel, Look not on his countenance, or on the height of his stature; because I have refused him: for the Lord seeth not as man seeth; for man looketh on the outward appearance, but the Lord looketh on the heart.",
       torifuda: "but the Lord looketh on the heart.",
     },
-    "Psalm 23:3-4": {
+    "Psalm 24:3-4": {
       fullScripture:
         "Who shall ascend into the hill of the Lord? or who shall stand in his holy place? He that hath clean hands, and a pure heart; who hath not lifted up his soul unto vanity, nor sworn deceitfully.",
       torifuda:
@@ -327,7 +327,7 @@ export const scripturePassages = {
     },
     "1 Corinthians 6:19-20": {
       fullScripture:
-        "What? know ye not that your body is the temple of the Holy Ghost which is in you, which ye have of God, and ye are not your own? For ye are bought with a price: therefore glorify God in your body, and in your spirit, which are God’s.",
+        "What? know ye not that your body is the temple of the Holy Ghost which is in you, which ye have of God, and ye are not your own? For ye are bought with a price: therefore glorify God in your body, and in your spirit, which are God's.",
       torifuda: "and in your spirit, which are God's.",
     },
     "1 Corinthians 15:20-22": {
