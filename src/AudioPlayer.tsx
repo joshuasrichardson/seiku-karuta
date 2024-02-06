@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FaPlay, FaPause } from "react-icons/fa";
 import { useAppContext } from "./AppProvider";
-import { AudioPlayerSize } from "./types";
+import { AudioPlayerSize, GameEventType } from "./types";
 
 interface AudioPlayerProps {
   src?: string;
@@ -20,7 +20,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
   hasPressedPlay,
   setHasPressedPlay,
 }) => {
-  const { t, playbackRate, setPlaybackRate } = useAppContext();
+  const { t, playbackRate, setPlaybackRate, setGameEvents } = useAppContext();
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -47,6 +47,29 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
 
     onAudioEnd();
   };
+
+  useEffect(() => {
+    // TODO: handle play and pause
+    console.log(isPlaying);
+
+    if (isPlaying) {
+      setGameEvents((prev) => [
+        ...prev,
+        {
+          type: GameEventType.BEGIN_READING_CARD,
+          time: Date.now(),
+        },
+      ]);
+    } else {
+      setGameEvents((prev) => [
+        ...prev,
+        {
+          type: GameEventType.FINISH_READING_CARD,
+          time: Date.now(),
+        },
+      ]);
+    }
+  }, [isPlaying]);
 
   const handlePlaybackSpeedChange = (speed: number) => {
     setPlaybackRate(speed);

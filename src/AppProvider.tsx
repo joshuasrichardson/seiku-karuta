@@ -4,7 +4,7 @@ import React, {
   useContext,
   useState,
 } from "react";
-import { AppContextValue, Language, StandardWork } from "./types";
+import { AppContextValue, GameEvent, Language, StandardWork } from "./types";
 import { translations } from "./translations";
 
 const AppContext = createContext<AppContextValue>({
@@ -17,6 +17,8 @@ const AppContext = createContext<AppContextValue>({
   setAreIntrosEnabled: () => null,
   playbackRate: 1,
   setPlaybackRate: () => null,
+  gameEvents: [],
+  setGameEvents: () => null,
 });
 
 interface AppProviderProps {
@@ -30,10 +32,13 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   );
   const [areIntrosEnabled, setAreIntrosEnabled] = useState(true);
   const [playbackRate, setPlaybackRate] = useState(1);
+  const [gameEvents, setGameEvents] = useState<GameEvent[]>([]);
 
   const t = (text: string): string => {
     if (!translations[language][text]) {
-      console.log(`Missing translation for ${text}`);
+      if (language !== Language.ENGLISH) {
+        console.log(`Missing translation for ${text}`);
+      }
       return text;
     }
     return translations[language][text];
@@ -49,6 +54,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     setAreIntrosEnabled,
     playbackRate,
     setPlaybackRate,
+    gameEvents,
+    setGameEvents,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

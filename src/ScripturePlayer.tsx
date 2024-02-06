@@ -69,38 +69,6 @@ const ScripturePlayer: React.FC<ScripturePlayerProps> = ({
     setIsReadingIntro((prev) => !prev);
   }, [areIntrosEnabled, isReadingIntro, unusedMasteryScriptures]);
 
-  const ScripturePlayerContents = () => (
-    <>
-      <label
-        htmlFor={`intro-enabled-check`}
-        className="flex items-center gap-2 mb-6 -mt-6"
-      >
-        <input
-          id={`intro-enabled-check`}
-          checked={areIntrosEnabled}
-          type="checkbox"
-          onChange={(e) => setAreIntrosEnabled(e.target.checked)}
-          className="checkbox text-green-700 focus:ring-green-700 h-4 w-4"
-        />
-        {t("Enable Intro Scriptures")}
-      </label>
-      <AudioPlayer
-        src={scriptureSrc}
-        onAudioEnd={onAudioEnd}
-        color={
-          isReadingIntro ? "text-green-700" : "text-blue-700 animate-pulse"
-        }
-        hasPressedPlay={hasPressedPlay}
-        setHasPressedPlay={setHasPressedPlay}
-      />
-      <DeckSelector />
-      <div className="text-xs flex items-center justify-center my-6">
-        {unusedMasteryScriptures.length}
-        {t(" scriptures remaining")}
-      </div>
-    </>
-  );
-
   return (
     <>
       {playingField ? (
@@ -123,7 +91,37 @@ const ScripturePlayer: React.FC<ScripturePlayerProps> = ({
         </>
       ) : (
         <div>
-          <ScripturePlayerContents />
+          <>
+            <label
+              htmlFor={`intro-enabled-check`}
+              className="flex items-center gap-2 mb-6 -mt-6"
+            >
+              <input
+                id={`intro-enabled-check`}
+                checked={areIntrosEnabled}
+                type="checkbox"
+                onChange={(e) => setAreIntrosEnabled(e.target.checked)}
+                className="checkbox text-green-700 focus:ring-green-700 h-4 w-4"
+              />
+              {t("Enable Intro Scriptures")}
+            </label>
+            <AudioPlayer
+              src={scriptureSrc}
+              onAudioEnd={onAudioEnd}
+              color={
+                isReadingIntro
+                  ? "text-green-700"
+                  : "text-blue-700 animate-pulse"
+              }
+              hasPressedPlay={hasPressedPlay}
+              setHasPressedPlay={setHasPressedPlay}
+            />
+            <DeckSelector />
+            <div className="text-xs flex items-center justify-center my-6">
+              {unusedMasteryScriptures.length}
+              {t(" scriptures remaining")}
+            </div>
+          </>
         </div>
       )}
     </>

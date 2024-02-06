@@ -5,6 +5,8 @@ import Study from "./Study";
 import GameBoard from "./GameBoard";
 import Menu from "./Menu";
 import { useAppContext } from "./AppProvider";
+import GameEventHandler from "./GameEventHandler";
+import { GameEventType } from "./types";
 
 const gameBoard = (
   <GameBoard>
@@ -17,10 +19,11 @@ const menu = <Menu />;
 
 const Game: React.FC = () => {
   const [gameScreen, setGameScreen] = useState(menu);
-  const { t } = useAppContext();
+  const { t, setGameEvents } = useAppContext();
 
   return (
     <>
+      <GameEventHandler />
       <div className="w-full flex flex-col justify-center items-center gap-12 bg-lime-50 h-[100vh]">
         {gameScreen === gameBoard && (
           <style>
@@ -30,9 +33,18 @@ const Game: React.FC = () => {
           </style>
         )}
         <button
-          onClick={() =>
-            setGameScreen((prev) => (prev === gameBoard ? menu : gameBoard))
-          }
+          onClick={() => {
+            setGameScreen((prev) => (prev === gameBoard ? menu : gameBoard));
+            if (gameScreen === gameBoard) {
+              setGameEvents((prev) => [
+                ...prev,
+                {
+                  time: Date.now(),
+                  type: GameEventType.START,
+                },
+              ]);
+            } else setGameEvents([]);
+          }}
           className="z-10 -mb-4"
         >
           {gameScreen === menu ? t("Start") : t("Menu")}

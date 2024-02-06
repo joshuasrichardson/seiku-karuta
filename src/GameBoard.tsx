@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ScripturePlayer from "./ScripturePlayer";
 import { getUniqueScriptureStarts } from "./scriptures";
-import { OnHitCardProps, ScriptureData } from "./types";
+import { GameEventType, OnHitCardProps, ScriptureData } from "./types";
 import { useAppContext } from "./AppProvider";
 import TorifudaGroup from "./TorifudaGroup";
 import {
@@ -27,7 +27,7 @@ const shuffleArray = (array: any[]) => {
 };
 
 const GameBoard: React.FC<GameScreenProps> = () => {
-  const { decks } = useAppContext();
+  const { decks, setGameEvents } = useAppContext();
 
   const numCardsPerDeck = 25;
   const numCards = decks.length * numCardsPerDeck;
@@ -137,9 +137,11 @@ const GameBoard: React.FC<GameScreenProps> = () => {
     uniqueClosestPointCoordinates.forEach((coordinates) => {
       const hitCard = hitFunctions.get(coordinatesToKey(coordinates) || "");
       if (!!hitCard) {
+        const hitTime = Date.now();
         hitCard({
           transition,
           scriptureSrc,
+          hitTime,
         });
       }
     });
@@ -159,10 +161,19 @@ const GameBoard: React.FC<GameScreenProps> = () => {
   return (
     <>
       <ScripturePlayer
-        completeGame={() => alert("Game Over!")}
+        completeGame={() => {
+          setGameEvents((prev) => [
+            ...prev,
+            {
+              time: Date.now(),
+              type: GameEventType.END,
+              username: "User",
+            },
+          ]);
+        }}
         playingField={({ scriptureSrc }) => (
           <div
-            className="flex flex-col h-full justify-between p-1"
+            className="flex flex-col h-full justify-between px-1 py-6"
             style={{ marginTop: -58, paddingTop: 58 }}
             onTouchMove={(event) =>
               onTouchMove({

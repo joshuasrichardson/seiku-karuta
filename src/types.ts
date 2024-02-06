@@ -10,6 +10,23 @@ export enum StandardWork {
   DOCTRINE_AND_COVENANTS = "Doctrine and Covenants",
 }
 
+export enum GameEventType {
+  START = "Start",
+  BEGIN_READING_CARD = "Begin Reading Card",
+  HIT_CARD = "Hit Card",
+  TAKE_CARD = "Take Card",
+  FAULT = "Fault",
+  FINISH_READING_CARD = "Finish Reading Card",
+  END = "End",
+}
+
+export interface GameEvent {
+  time: number;
+  type: GameEventType;
+  username?: string;
+  scriptureReference?: string;
+}
+
 export interface AppContextValue {
   language: Language;
   setLanguage: React.Dispatch<React.SetStateAction<Language>>;
@@ -20,6 +37,8 @@ export interface AppContextValue {
   setAreIntrosEnabled: React.Dispatch<React.SetStateAction<boolean>>;
   playbackRate: number;
   setPlaybackRate: React.Dispatch<React.SetStateAction<number>>;
+  gameEvents: GameEvent[];
+  setGameEvents: React.Dispatch<React.SetStateAction<GameEvent[]>>;
 }
 
 export interface ScriptureData {
@@ -42,5 +61,6 @@ export interface Coordinates {
 
 export interface OnHitCardProps {
   transition: Coordinates;
+  hitTime: number;
   scriptureSrc?: string;
 }
